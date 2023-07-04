@@ -29,6 +29,11 @@ struct ContentView: View {
                                     centerPoint: centerPoint,
                                     boxSquare: boxSquare,
                                     color: .gray)
+            bgBoxLineArrow(geometry: geometry,
+                           centerPoint: centerPoint,
+                           boxSquare: boxSquare,
+                           color: .gray)
+            
             VStack {
                 Button("Connect") {
                     isConnecting = true
@@ -74,6 +79,7 @@ struct ContentView: View {
                          color: Color,
                          lineSpacing: CGFloat = 25) -> some View {
         let boxHalfSquare = (boxSquare / 2) + lineSpacing
+        let tolerance: CGFloat = 4
         
         return Path { path in
 //            path.addLines([
@@ -84,8 +90,7 @@ struct ContentView: View {
 //                CGPoint(x: centerPoint.x, y: centerPoint.y - boxHalfSquare)
 //            ])
             
-            let tolerance: CGFloat = 4
-            // top left
+            // top right
             path.move(to: CGPoint(x: centerPoint.x + tolerance,
                                   y: centerPoint.y - boxHalfSquare + tolerance))
             path.addLines([
@@ -94,7 +99,7 @@ struct ContentView: View {
                 CGPoint(x: centerPoint.x + boxHalfSquare - tolerance, y: centerPoint.y - tolerance)
             ])
             
-            // bottom left
+            // bottom right
             path.move(to: CGPoint(x: centerPoint.x + boxHalfSquare - tolerance,
                                   y: centerPoint.y - tolerance))
             path.addLines([
@@ -102,7 +107,7 @@ struct ContentView: View {
                 CGPoint(x: centerPoint.x + tolerance, y: centerPoint.y + boxHalfSquare - tolerance)
             ])
             
-            // bottom right
+            // bottom left
             path.move(to: CGPoint(x: centerPoint.x - tolerance,
                                   y: centerPoint.y + boxHalfSquare - tolerance))
             path.addLines([
@@ -110,7 +115,7 @@ struct ContentView: View {
                 CGPoint(x: centerPoint.x - boxHalfSquare + tolerance, y: centerPoint.y + tolerance)
             ])
             
-            // top right
+            // top left
             path.move(to: CGPoint(x: centerPoint.x - boxHalfSquare + tolerance,
                                   y: centerPoint.y - tolerance))
             path.addLines([
@@ -169,6 +174,81 @@ struct ContentView: View {
             ])
         }
         .stroke(lineWidth: 2)
+    }
+    
+    func bgBoxLineArrow(geometry: GeometryProxy,
+                        centerPoint: CGPoint,
+                        boxSquare: CGFloat,
+                        color: Color,
+                        lineSpacing: CGFloat = 25) -> some View {
+        let boxHalfSquare = (boxSquare / 2) + lineSpacing * 2
+        let tolerance: CGFloat = (boxSquare / 2)
+        let halfLineSpacing = lineSpacing / 2
+        let lineLength = tolerance * 1.5
+        
+        return Path { path in
+            // top right
+            path.move(to: CGPoint(x: centerPoint.x + tolerance,
+                                  y: centerPoint.y - boxHalfSquare + tolerance))
+            path.addLines([
+                CGPoint(x: centerPoint.x + tolerance,
+                                      y: centerPoint.y - boxHalfSquare + tolerance),
+                CGPoint(x: centerPoint.x + boxHalfSquare - tolerance, y: centerPoint.y - tolerance)
+            ])
+            
+            path.move(to: CGPoint(x: centerPoint.x + tolerance - halfLineSpacing, y: centerPoint.y - tolerance + halfLineSpacing))
+            path.addLines([
+                CGPoint(x: centerPoint.x + tolerance - halfLineSpacing, y: centerPoint.y - tolerance + halfLineSpacing),
+                CGPoint(x: centerPoint.x + lineLength, y: centerPoint.y - lineLength)
+            ])
+            
+            // bottom right
+            path.move(to: CGPoint(x: centerPoint.x + boxHalfSquare - tolerance, y: centerPoint.y + tolerance))
+            path.addLines([
+                CGPoint(x: centerPoint.x + boxHalfSquare - tolerance, y: centerPoint.y + tolerance),
+                CGPoint(x: centerPoint.x + tolerance, y: centerPoint.y + boxHalfSquare - tolerance)
+            ])
+            
+            path.move(to: CGPoint(x: centerPoint.x + tolerance - halfLineSpacing, y: centerPoint.y + tolerance - halfLineSpacing))
+            
+            path.addLines([
+                CGPoint(x: centerPoint.x + tolerance - halfLineSpacing, y: centerPoint.y + tolerance - halfLineSpacing),
+                CGPoint(x: centerPoint.x + lineLength, y: centerPoint.y + lineLength)
+            ])
+            
+            // bottom left
+            path.move(to: CGPoint(x: centerPoint.x - tolerance,
+                                  y: centerPoint.y + boxHalfSquare - tolerance))
+            path.addLines([
+                CGPoint(x: centerPoint.x - tolerance, y: centerPoint.y + boxHalfSquare - tolerance),
+                CGPoint(x: centerPoint.x - boxHalfSquare + tolerance, y: centerPoint.y + tolerance)
+            ])
+            
+            path.move(to: CGPoint(x: centerPoint.x - tolerance + halfLineSpacing,
+                                  y: centerPoint.y + tolerance - halfLineSpacing))
+            path.addLines([
+                CGPoint(x: centerPoint.x - tolerance + halfLineSpacing,
+                                      y: centerPoint.y + tolerance - halfLineSpacing),
+                CGPoint(x: centerPoint.x - lineLength,
+                                      y: centerPoint.y + lineLength)
+            ])
+            
+            // top left
+            path.move(to: CGPoint(x: centerPoint.x - boxHalfSquare + tolerance,
+                                  y: centerPoint.y - tolerance))
+            path.addLines([
+                CGPoint(x: centerPoint.x - boxHalfSquare + tolerance,
+                                      y: centerPoint.y - tolerance),
+                CGPoint(x: centerPoint.x - tolerance, y: centerPoint.y - boxHalfSquare + tolerance)
+            ])
+            
+            path.move(to: CGPoint(x: centerPoint.x - tolerance + halfLineSpacing, y: centerPoint.y - tolerance + halfLineSpacing))
+            path.addLines([
+                CGPoint(x: centerPoint.x - tolerance + halfLineSpacing, y: centerPoint.y - tolerance + halfLineSpacing),
+                CGPoint(x: centerPoint.x - lineLength, y: centerPoint.y - lineLength)
+            ])
+        }
+        .stroke(lineWidth: 1)
     }
 }
 
